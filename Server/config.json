@@ -1,0 +1,9 @@
+﻿{
+  "Server": {
+    "Port": 4000,
+    "MaxClients": 5,
+    "OutputInterval": 10,
+    "LogName": "numbers.log",
+    "TerminateCommand" : "terminate"
+  }
+}
