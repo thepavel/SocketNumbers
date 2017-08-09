@@ -5,19 +5,24 @@ namespace Server
 {
     public class ServerSettings
     {
-        public ServerSettings() {
-            
+        private IConfigurationSection ConfigurationSection { get; }
+
+        public ServerSettings()
+        {
+
         }
 
-        public ServerSettings(IConfigurationSection configSection) {
+        public ServerSettings(IConfigurationSection configSection)
+        {
+            ConfigurationSection = configSection;
 
             if (configSection != null)
             {
-                Port = GetIntValue(configSection, "Port");
-                MaxClients = GetIntValue(configSection, "MaxClients");
-                OutputIntervalSeconds = int.Parse(configSection["OutputInterval"]);
-                LogName = configSection["LogName"];
-                TerminateCommand = configSection["TerminateCommand"];
+                Port = GetIntValue("Port");
+                MaxClients = GetIntValue("MaxClients");
+                OutputIntervalSeconds = GetIntValue("OutputInterval");
+                LogName = GetStringValue("LogName");
+                TerminateCommand = GetStringValue("TerminateCommand");
             }
         }
         public int Port { get; set; }
@@ -26,14 +31,22 @@ namespace Server
         public string LogName { get; set; }
         public string TerminateCommand { get; set; }
 
-        public static Dictionary<string, dynamic> DefaultSettings => new Dictionary<string, dynamic>() {
-                    { "Port", 4000},
-
-
+        public static Dictionary<string, string> DefaultSettings => new Dictionary<string, string> {
+                    { "Port", "4000"},
+                    { "MaxClients", "5"},
+                    { "OutputInterval", "10"},
+                    { "LogName", "numbers.log"},
+                    { "TerminateCommand", "terminate"}
                 };
 
-        public static int GetIntValue(IConfigurationSection section, string key) {
-            return section[key] != null ? int.Parse(section[key]) : int.Parse(DefaultSettings[key]);
+        public string GetStringValue(string key)
+        {
+            return ConfigurationSection != null && ConfigurationSection[key] != null ? ConfigurationSection[key] : DefaultSettings[key];
+        }
+
+        public int GetIntValue(string key)
+        {
+            return int.Parse(GetStringValue(key));
         }
     }
 }
