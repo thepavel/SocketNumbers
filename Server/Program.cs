@@ -13,6 +13,7 @@ namespace Server
         {
             var configuration = GetConfiguration(args);
 
+
             Console.WriteLine("Hello World!");
         }
 
