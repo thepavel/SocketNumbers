@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 
@@ -11,22 +11,14 @@ namespace Server
 
         static void Main(string[] args)
         {
-            var configuration = GetConfiguration(args);
+            var configuration = new AppConfig(args);
+            var serverSettings = new ServerSettings(configuration.GetSection("Server"));
 
+            Console.WriteLine($"Listening on {serverSettings.Port}");
 
             Console.WriteLine("Hello World!");
         }
 
-        private static ServerSettings GetConfiguration(string[] args)
-        {
-            var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("config.json")
-                    .AddCommandLine(args);
-            
-            Configuration = builder.Build();
 
-            return new ServerSettings(Configuration.GetSection("Server"));
-        }
     }
 }
