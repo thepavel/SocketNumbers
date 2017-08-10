@@ -1,36 +1,31 @@
-﻿﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Server
 {
     public class ServerSettings
     {
-        public static ServerSettings GetConfiguration(string[] args)
-        {
-            var config = new AppConfig(args);
-            return new ServerSettings(config.Settings.GetSection("Server"));
-        }
-        private IConfigurationSection ConfigurationSection { get; }
+        IConfigurationSection ConfigurationSection { get; }
 
         public ServerSettings()
         {
+            Initialize();
+        }
 
+        private void Initialize()
+        {
+            Port = GetIntValue("Port");
+            MaxClients = GetIntValue("MaxClients");
+            OutputIntervalSeconds = GetIntValue("OutputInterval");
+            LogName = GetStringValue("LogName");
+            TerminateCommand = GetStringValue("TerminateCommand");
         }
 
         public ServerSettings(IConfigurationSection configSection)
         {
             ConfigurationSection = configSection;
 
-            if (configSection != null)
-            {
-                Port = GetIntValue("Port");
-                MaxClients = GetIntValue("MaxClients");
-                OutputIntervalSeconds = GetIntValue("OutputInterval");
-                LogName = GetStringValue("LogName");
-                TerminateCommand = GetStringValue("TerminateCommand");
-            }
+            Initialize();
         }
         public int Port { get; set; }
         public int MaxClients { get; set; }
