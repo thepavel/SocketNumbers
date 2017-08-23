@@ -29,16 +29,17 @@ namespace Server
         public static int NewLineSize => NewLineSequence.Length;
         public static int ChunkSize => ValueSize + NewLineSize;
 
-        private static readonly string _terminateSequence = AppConfig.ServerSettings.TerminateCommand + Environment.NewLine;
+        private static readonly string TerminateSequence = AppConfig.ServerSettings.TerminateCommand + Environment.NewLine;
 
-        public readonly ISocketConnectionProxy _socketConnection;
+        private SocketConnectionProxy SocketConnection { get; }
 
         public SocketStreamReader(Socket socket) : this(new SocketConnectionProxy(socket))
         {
         }
-        public SocketStreamReader(ISocketConnectionProxy socketConnection)
+
+        private SocketStreamReader(SocketConnectionProxy socketConnection)
         {
-            _socketConnection = socketConnection;
+            SocketConnection = socketConnection;
         }
 
         public void Read(Action<int> valueReadCallback, Action terminationCallback = null)
@@ -78,7 +79,7 @@ namespace Server
             int bufferOffset = 0;
             while (bufferOffset < buffer.Length)
             {
-                bytesRead = _socketConnection.Receive(buffer, bufferOffset, buffer.Length - bufferOffset);
+                bytesRead = SocketConnection.Receive(buffer, bufferOffset, buffer.Length - bufferOffset);
                 if (bytesRead == 0)
                 {
                     break;
@@ -125,7 +126,7 @@ namespace Server
             if (buffer[0] == 84 || buffer[0] == 116) // Check first byte before transforming to string.
             {
                 return Encoding.ASCII.GetString(buffer)
-                    .Equals(_terminateSequence, StringComparison.OrdinalIgnoreCase);
+                    .Equals(TerminateSequence, StringComparison.OrdinalIgnoreCase);
             }
             return false;
         }

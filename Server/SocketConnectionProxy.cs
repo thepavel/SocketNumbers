@@ -1,20 +1,20 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace Server
 {
-    internal class SocketConnectionProxy : ISocketConnectionProxy
+    class SocketConnectionProxy
     {
-        private Socket socket;
 
         public SocketConnectionProxy(Socket socket)
         {
-            this.socket = socket;
+            Socket = socket;
         }
+
+        private Socket Socket { get; }
 
         public int Receive(byte[] buffer, int offset, int size)
         {
-            return socket.Receive(buffer, offset, size, SocketFlags.None);
+            return Socket.Receive(buffer, offset, size, SocketFlags.None);
         }
     }
 }
