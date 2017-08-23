@@ -14,7 +14,7 @@ namespace Server
         public Listener() {
             
             Settings = AppConfig.ServerSettings;
-            ConsoleWriter = new ConsoleWriter(Settings.OutputIntervalSeconds);
+            ConsoleWriter = new ConsoleWriter();
             SocketListener = new SocketListener();
             LogFile = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), Settings.LogName), FileMode.Create);
             LogWriter = new QueingLogWriter(new StreamWriter(LogFile, Encoding.UTF8));

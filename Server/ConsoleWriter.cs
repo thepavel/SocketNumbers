@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using log4net;
 using Server.Models;
@@ -8,7 +7,7 @@ namespace Server
 {
     internal class ConsoleWriter
     {
-        private const int DefaultInterval = 10;
+        private ServerSettings Settings = AppConfig.ServerSettings;
         private ManualResetEventSlim StopSignal { get; }
         private int IntervalSeconds { get; }
         private ILog Log { get; }
@@ -21,13 +20,7 @@ namespace Server
             StopSignal = new ManualResetEventSlim();
             Log = LogManager.GetLogger(typeof(ConsoleWriter));
             Model = new ConsoleReportModel();
-            IntervalSeconds = DefaultInterval;
-        }
-
-        public ConsoleWriter(int intervalSeconds)
-        {
-            IntervalSeconds = intervalSeconds;
-
+            IntervalSeconds = Settings.OutputIntervalSeconds;
         }
 
         public void Start()
