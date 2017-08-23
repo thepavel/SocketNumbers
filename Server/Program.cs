@@ -7,6 +7,8 @@ using System.Reflection;
 using log4net.Appender;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
+using System.IO;
+using System.Threading;
 
 namespace Server
 {
@@ -14,22 +16,22 @@ namespace Server
     {
         public static IConfigurationRoot Configuration { get; set; }
         private static Listener Listener { get; set; }
+        private static ManualResetEventSlim ExitSignal = new ManualResetEventSlim();
 
         static void Main(string[] args)
         {
-            var configuration = new AppConfig(args);
-            var serverSettings = new ServerSettings(configuration.GetSection("Server"));
+            var serverSettings = AppConfig.ServerSettings;
 
             ConfigureLogging(Level.Info);
 
-            LaunchServer(serverSettings);
+            LaunchServer(args);
 
             Console.WriteLine($"Listening on {serverSettings.Port}");
 
             Console.WriteLine("Hello World!");
         }
 
-        private static void LaunchServer(ServerSettings settings)
+        private static void LaunchServer(string[] args)
         {
             var cmd = new CommandLineApplication()
             {
@@ -38,14 +40,39 @@ namespace Server
             };
             cmd.OnExecute(() =>
             {
-                Run(settings);
+                Run();
                 return 0;
             });
+            cmd.Execute(args);
         }
 
-        private static void Run(ServerSettings settings)
+        private static void Run()
         {
-            
+            Listener = new Listener();
+            Listener.Run(Terminate);
+
+            Console.CancelKeyPress += (sender, e) => StopServer();
+            ExitSignal.Wait();
+        }
+
+        private static void Terminate()
+        {
+            Console.WriteLine("Terminate command received");
+            StopServer();
+            ExitSignal.Set();
+        }
+
+        private static void StopServer()
+        {
+            Console.WriteLine("Stopping server");
+            try
+            {
+                Listener.Dispose();
+            }
+            catch
+            {
+
+            }
         }
 
         private static void ConfigureLogging(Level level)

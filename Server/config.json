@@ -4,6 +4,6 @@
     "MaxClients": 5,
     "OutputInterval": 10,
     "LogName": "numbers.log",
-    "TerminateCommand" : "terminate"
+    "TerminateCommand": "terminate"
   }
 }
