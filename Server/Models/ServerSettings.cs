@@ -7,11 +7,6 @@ namespace Server
     {
         IConfigurationSection ConfigurationSection { get; }
 
-        public ServerSettings()
-        {
-            Initialize();
-        }
-
         private void Initialize()
         {
             Port = GetIntValue("Port");

@@ -12,30 +12,23 @@ namespace Server
 {
     class Program
     {
-        
-        private static Listener Listener { get; set; }
+
+        private static Listener Listener => new Listener();
         private static ManualResetEventSlim ExitSignal = new ManualResetEventSlim();
 
         static void Main(string[] args)
         {
-            var serverSettings = AppConfig.ServerSettings;
 
             ConfigureLogging(Level.Info);
 
-            LaunchServer(args);
-
-            Console.WriteLine($"Listening on {serverSettings.Port}");
-        }
-
-        private static int LaunchServer(string[] args)
-        {
-            var cmd = new CommandLineApplication()
+            var cmd = new CommandLineApplication
             {
                 FullName = "A socket server which will log 9-digit numbers that are sent to it.",
                 Name = "dotnet run --"
             };
             cmd.OnExecute(() =>
             {
+                
                 Run();
                 return 0;
             });
@@ -44,16 +37,26 @@ namespace Server
 
         private static void Run()
         {
-            Listener = new Listener();
+            
             Listener.Run(Terminate);
 
-            Console.CancelKeyPress += (sender, e) => Terminate();
+            Console.CancelKeyPress += (sender, e) => KillCmd();
             ExitSignal.Wait();
+        }
+
+        private static void KillCmd() {
+            StopListener("Cancel detected from console");
+
         }
 
         private static void Terminate()
         {
-            Console.WriteLine("Terminate command received");
+            StopListener("Terminate command received");
+        }
+
+        private static void StopListener(string message)
+        {
+            Console.WriteLine(message);
             StopServer();
             ExitSignal.Set();
         }
@@ -67,7 +70,7 @@ namespace Server
             }
             catch(Exception e)
             {
-                Console.WriteLine();
+                Console.WriteLine($"Exception while stopping server. Exception: {e.Message}");
             }
         }
 

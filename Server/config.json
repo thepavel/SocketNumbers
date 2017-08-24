@@ -1,6 +1,6 @@
 ﻿{
   "Server": {
-    "Port": 4000,
+    "Port": 4001,
     "MaxClients": 5,
     "OutputInterval": 10,
     "LogName": "numbers.log",
