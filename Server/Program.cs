@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.CommandLineUtils;
 using log4net.Core;
 using log4net;
@@ -7,14 +6,13 @@ using System.Reflection;
 using log4net.Appender;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
-using System.IO;
 using System.Threading;
 
 namespace Server
 {
     class Program
     {
-        public static IConfigurationRoot Configuration { get; set; }
+        
         private static Listener Listener { get; set; }
         private static ManualResetEventSlim ExitSignal = new ManualResetEventSlim();
 
@@ -27,11 +25,9 @@ namespace Server
             LaunchServer(args);
 
             Console.WriteLine($"Listening on {serverSettings.Port}");
-
-            Console.WriteLine("Hello World!");
         }
 
-        private static void LaunchServer(string[] args)
+        private static int LaunchServer(string[] args)
         {
             var cmd = new CommandLineApplication()
             {
@@ -51,7 +47,7 @@ namespace Server
             Listener = new Listener();
             Listener.Run(Terminate);
 
-            Console.CancelKeyPress += (sender, e) => StopServer();
+            Console.CancelKeyPress += (sender, e) => Terminate();
             ExitSignal.Wait();
         }
 
@@ -69,9 +65,9 @@ namespace Server
             {
                 Listener.Dispose();
             }
-            catch
+            catch(Exception e)
             {
-
+                Console.WriteLine();
             }
         }
 

@@ -42,7 +42,8 @@ namespace Server
         {
             if(LogWriter.WriteUnique(value)) {
                 ConsoleWriter.RecordUnique();
-            }else {
+            }
+            else {
                 ConsoleWriter.RecordDuplicate();
             }
         }
