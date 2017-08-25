@@ -24,7 +24,7 @@ namespace Server
     /// </remarks>
     public class SocketStreamReader
     {
-        public static int ValueSize => 9;
+        public static int ValueSize => AppConfig.ServerSettings.InputLength;
         public static byte[] NewLineSequence => Encoding.ASCII.GetBytes(Environment.NewLine);
         public static int NewLineSize => NewLineSequence.Length;
         public static int ChunkSize => ValueSize + NewLineSize;
@@ -33,13 +33,9 @@ namespace Server
 
         private SocketConnectionProxy SocketConnection { get; }
 
-        public SocketStreamReader(Socket socket) : this(new SocketConnectionProxy(socket))
+        public SocketStreamReader(Socket socket) 
         {
-        }
-
-        private SocketStreamReader(SocketConnectionProxy socketConnection)
-        {
-            SocketConnection = socketConnection;
+            SocketConnection = new SocketConnectionProxy(socket);
         }
 
         public void Read(Action<int> valueReadCallback, Action terminationCallback = null)
