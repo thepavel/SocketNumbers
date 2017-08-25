@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.Extensions.CommandLineUtils;
-using log4net.Core;
-using log4net;
 using System.Reflection;
+using System.Threading;
+using log4net;
 using log4net.Appender;
+using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
-using System.Threading;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace Server
 {
@@ -18,7 +18,6 @@ namespace Server
 
         static void Main(string[] args)
         {
-
             ConfigureLogging(Level.Info);
 
             var cmd = new CommandLineApplication
@@ -45,18 +44,20 @@ namespace Server
         }
 
         private static void KillCmd() {
-            StopListener("Cancel detected from console");
+            Console.WriteLine("");
+            Console.WriteLine("Cancel detected from console");
+            StopListener();
 
         }
 
         private static void Terminate()
         {
-            StopListener("Terminate command received");
+            Console.WriteLine("Terminate command received");
+            StopListener();
         }
 
-        private static void StopListener(string message)
+        private static void StopListener()
         {
-            Console.WriteLine(message);
             StopServer();
             ExitSignal.Set();
         }
