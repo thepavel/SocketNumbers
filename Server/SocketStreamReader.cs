@@ -47,7 +47,7 @@ namespace Server
             while ((bytesRead = TryReadChunk(buffer)) == ChunkSize)
             {
                 // Convert to 32-bit int. If not valid number, we're done.
-                if (!TryConvertToInt32(buffer, out int value))
+                if (!TryConvertToInt32(buffer, out int @value))
                 {
                     // Check for terminate command. If found, invoke callback
                     // so caller can act on it.
@@ -60,7 +60,7 @@ namespace Server
                 }
 
                 // When we get a good value, invoke callback so value can be processed.
-                valueReadCallback?.Invoke(value);
+                valueReadCallback?.Invoke(@value);
             }
         }
 

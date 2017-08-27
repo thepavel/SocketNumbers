@@ -19,11 +19,5 @@ namespace Server
 
         public static ServerSettings ServerSettings => new ServerSettings(Settings.GetSection("Server"));
 
-        public IConfigurationSection GetSection(string name)
-        {
-            return Settings.GetSection(name);
-        }
-
-
     }
 }

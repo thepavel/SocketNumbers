@@ -109,7 +109,8 @@ namespace Server
 
         private void StopWatchingQueue()
         {
-            _writer.Flush();
+            _writer.Dispose();
+
             _workerSignal.Set();
             _stopSignal.Set();
         }
